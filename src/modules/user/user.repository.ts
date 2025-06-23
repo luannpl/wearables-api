@@ -12,6 +12,17 @@ export const UserRepository = {
             throw new Error(`Error finding user by email: ${error.message}`);
         }
     },
+
+    async findByUsername(username: string) {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { username },
+            });
+            return user;
+        } catch (error: any) {
+            throw new Error(`Error finding user by username: ${error.message}`);
+        }
+    },
     async create(userData: CreateUserDto) {
         try {
             const user = await prisma.user.create({
