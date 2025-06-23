@@ -6,8 +6,9 @@ import { LoginSchema } from "./dto/login.schema";
 
 const router = Router();
 
-router.post('/', validate(CreateUserSchema), UserController.createUser);
+router.post("/", validate(CreateUserSchema), UserController.createUser);
 router.post("/login", validate(LoginSchema), UserController.login);
 router.get("/", UserController.getAllUsers);
+router.delete("/:id", UserController.deleteUser);
 
 export default router;
