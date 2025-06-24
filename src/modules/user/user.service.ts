@@ -47,7 +47,11 @@ export const UserService = {
   async getAllUsers() {
     try {
       const users = await UserRepository.findAll();
-      return users;
+      const usersWithoutPassword = users.map((user) => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      return usersWithoutPassword;
     } catch (error: any) {
       throw new Error(`Error fetching users: ${error.message}`);
     }
