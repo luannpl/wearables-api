@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { UserService } from "./user.service";
 import { HttpError } from "../../errors/HttpErrors";
-import { User } from "@prisma/client";
 
 export const UserController = {
   async createUser(req: Request, res: Response): Promise<void> {

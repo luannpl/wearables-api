@@ -3,6 +3,7 @@ import { UserRepository } from "./user.repository";
 import { comparePassword, hashPassword } from "../../utils/hash";
 import { BadRequestError, UnauthorizedError } from "../../errors/HttpErrors";
 import { LoginDto } from "./dto/login.schema";
+import { generateToken } from "../../utils/generateToken";
 
 export const UserService = {
   async createUser(userData: CreateUserDto) {
@@ -37,9 +38,14 @@ export const UserService = {
     if (!isPasswordValid) {
       throw new UnauthorizedError("Invalid credentials");
     }
+    const token = await generateToken(user);
+    if (!token) {
+      throw new BadRequestError("Error generating token");
+    }
     const { password, ...userWithoutPassword } = user;
     return {
       message: "Login successful",
+      token,
       user: userWithoutPassword,
     };
   },
