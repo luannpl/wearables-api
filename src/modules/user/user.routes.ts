@@ -9,7 +9,9 @@ const router = Router();
 
 router.post("/", validate(CreateUserSchema), UserController.createUser);
 router.post("/login", validate(LoginSchema), UserController.login);
-router.get("/", authenticate ,UserController.getAllUsers);
-router.delete("/:id", authenticate,UserController.deleteUser);
+
+router.get("/me", authenticate, UserController.getCurrentUser);
+router.get("/", authenticate, UserController.getAllUsers);
+router.delete("/:id", authenticate, UserController.deleteUser);
 
 export default router;

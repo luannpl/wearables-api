@@ -29,6 +29,23 @@ export const UserController = {
     }
   },
 
+  async getCurrentUser(req: Request, res: Response): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: "Unauthorized" });
+        return;
+      }
+      const user = await UserService.getCurrentUser(req.user.id);
+      res.status(200).json(user);
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.status).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
   async getAllUsers(_: Request, res: Response): Promise<void> {
     try {
       const users = await UserService.getAllUsers();

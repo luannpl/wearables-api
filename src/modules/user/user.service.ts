@@ -50,6 +50,15 @@ export const UserService = {
     };
   },
 
+  async getCurrentUser(id: string) {
+    const user = await UserRepository.findById(id);
+    if (!user) {
+      throw new BadRequestError("User not found");
+    }
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  },
+
   async getAllUsers() {
     try {
       const users = await UserRepository.findAll();
