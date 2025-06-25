@@ -16,9 +16,12 @@ model User {
   id        String   @id @default(uuid())
   name      String
   username  String   @unique
+  phone     String   @default("0000000000")
   email     String   @unique
   password  String
   role      Role     @default(USER)
+  registredProducts Product[] @relation("UserRegistredProducts")
+  updatedProducts Product[] @relation("UserUpdatedProducts")
   createdAt DateTime @default(now())
 }
 
@@ -28,10 +31,13 @@ model Product {
   price        Float
   stock        Int
   discount     Float         @default(0)
-  sellerNumber String
   category     Category      @relation(fields: [categoryId], references: [id])
   categoryId   String
   sizes        ProductSize[]
+  registredBy   User         @relation("UserRegistredProducts",fields: [registredById], references: [id])
+  registredById String
+  updatedBy   User?        @relation("UserUpdatedProducts",fields: [updatedById], references: [id])
+  updatedById String?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
