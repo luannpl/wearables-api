@@ -1,5 +1,6 @@
 import { prisma } from "../../prisma/client";
-import { CreateUserDto } from "./dto/createUser.schema";
+import { CreateUserDto } from "./dto/createUser.dto";
+
 
 export const UserRepository = {
   async findByEmail(email: string) {

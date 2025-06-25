@@ -1,3 +1,4 @@
+import { BadRequestError } from "../../errors/HttpErrors";
 import { ProductRepository } from "./product.repository";
 
 export const ProductService = {
@@ -7,6 +8,18 @@ export const ProductService = {
             return products;
         } catch (error) {
             throw new Error("Error fetching products");
+        }
+    },
+
+    async createProduct(productData: any) {
+        try {
+            const newProduct = await ProductRepository.create(productData);
+            if (!newProduct) {
+                throw new BadRequestError("Product creation failed");
+            }
+            return newProduct;
+        } catch (error) {
+            throw new Error("Error creating product");
         }
     }
 };

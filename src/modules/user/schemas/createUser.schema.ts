@@ -9,4 +9,4 @@ export const CreateUserSchema = z.object({
   role: z.nativeEnum(Role),
 });
 
-export type CreateUserDto = z.infer<typeof CreateUserSchema>;
+

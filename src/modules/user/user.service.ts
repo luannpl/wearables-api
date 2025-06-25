@@ -1,9 +1,9 @@
-import { CreateUserDto } from "./dto/createUser.schema";
 import { UserRepository } from "./user.repository";
 import { comparePassword, hashPassword } from "../../utils/hash";
 import { BadRequestError, UnauthorizedError } from "../../errors/HttpErrors";
-import { LoginDto } from "./dto/login.schema";
 import { generateToken } from "../../utils/generateToken";
+import { CreateUserDto } from "./dto/createUser.dto";
+import { LoginDto } from "./dto/login.dto";
 
 export const UserService = {
   async createUser(userData: CreateUserDto) {

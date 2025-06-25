@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { validate } from "../../middlewares/validate";
-import { CreateUserSchema } from "./dto/createUser.schema";
-import { LoginSchema } from "./dto/login.schema";
+import { CreateUserSchema } from "./schemas/createUser.schema";
+import { LoginSchema } from "./schemas/login.schema";
 import { authenticate } from "../../middlewares/authenticate";
 import { UserController } from "./user.controller";
 

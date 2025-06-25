@@ -13,4 +13,15 @@ export const ProductRepository = {
             throw new Error("Error fetching products");
         }
     },
+
+    async create(productData: any) {
+        try {
+            const newProduct = await prisma.product.create({
+                data: productData,
+            });
+            return newProduct;
+        } catch (error) {
+            throw new Error("Error creating product");
+        }
+    },
 };
