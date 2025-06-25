@@ -1,4 +1,5 @@
 import { BadRequestError } from "../../errors/HttpErrors";
+import { CreateProductDto } from "./dto/createProduct.dto";
 import { ProductRepository } from "./product.repository";
 
 export const ProductService = {
@@ -11,7 +12,7 @@ export const ProductService = {
         }
     },
 
-    async createProduct(productData: any) {
+    async createProduct(productData: CreateProductDto) {
         try {
             const newProduct = await ProductRepository.create(productData);
             if (!newProduct) {
