@@ -1,4 +1,6 @@
 import { BadRequestError } from "../../errors/HttpErrors";
+import { CategoryRepository } from "../category/category.repository";
+import { UserRepository } from "../user/user.repository";
 import { CreateProductDto } from "./dto/createProduct.dto";
 import { ProductRepository } from "./product.repository";
 
@@ -13,6 +15,13 @@ export const ProductService = {
     },
 
     async createProduct(productData: CreateProductDto) {
+        console.log(productData)
+        const category = await CategoryRepository.upsert(productData.category);
+        const user = await UserRepository.findById(productData.registredById);
+        if(!user){
+            throw new BadRequestError("User not exists")
+        }
+        
         try {
             const newProduct = await ProductRepository.create(productData);
             if (!newProduct) {
