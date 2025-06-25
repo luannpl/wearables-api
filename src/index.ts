@@ -1,5 +1,6 @@
 import express from 'express';
 import UserRoutes from "./modules/user/user.routes";
+import ProductRoutes from "./modules/product/product.routes";
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -12,6 +13,7 @@ app.get('/', (_, res) => {
 });
 
 app.use('/users', UserRoutes);
+app.use('/products', ProductRoutes);
 
 
 app.listen(3000, () => console.log('Server on http://localhost:'+ PORT));
