@@ -29,7 +29,6 @@ model Product {
   id            String        @id @default(uuid())
   name          String
   price         Float
-  stock         Int
   discount      Float         @default(0)
   category      Category      @relation(fields: [categoryId], references: [id])
   categoryId    String
@@ -57,9 +56,9 @@ model Size {
 model ProductSize {
   productId String
   sizeId    String
-
-  product Product @relation(fields: [productId], references: [id])
-  size    Size    @relation(fields: [sizeId], references: [id])
+  stock     Int
+  product   Product @relation(fields: [productId], references: [id])
+  size      Size    @relation(fields: [sizeId], references: [id])
 
   @@id([productId, sizeId])
 }
