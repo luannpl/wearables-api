@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "../../prisma/client";
+import { BadRequestError } from "../../errors/HttpErrors";
 
 export const ProductRepository = {
   async findAll() {
@@ -15,6 +16,21 @@ export const ProductRepository = {
     }
   },
 
+  async findById(id: string) {
+    try {
+      const product = await prisma.product.findUnique({
+        where: { id },
+        include: {
+          category: true,
+        },
+      });
+
+      return product; // Retorna null se não encontrar
+    } catch (error) {
+      throw new Error("Error fetching product");
+    }
+  },
+
   async create(data: Prisma.ProductCreateInput) {
     try {
       const newProduct = await prisma.product.create({
@@ -23,6 +39,20 @@ export const ProductRepository = {
       return newProduct;
     } catch (error) {
       throw new Error("Error creating product");
+    }
+  },
+
+  async delete(id: string) {
+    try {
+      const deletedProduct = await prisma.product.delete({
+        where: { id },
+      });
+      if (!deletedProduct) {
+        throw new BadRequestError("Product not found");
+      }
+      return deletedProduct;
+    } catch (error) {
+      throw new Error("Error deleting product");
     }
   },
 };

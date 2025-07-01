@@ -57,8 +57,9 @@ model ProductSize {
   productId String
   sizeId    String
   stock     Int
-  product   Product @relation(fields: [productId], references: [id])
-  size      Size    @relation(fields: [sizeId], references: [id])
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size    Size    @relation(fields: [sizeId], references: [id])
 
   @@id([productId, sizeId])
 }

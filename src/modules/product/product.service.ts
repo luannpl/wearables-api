@@ -4,6 +4,8 @@ import { CategoryRepository } from "../category/category.repository";
 import { UserRepository } from "../user/user.repository";
 import { CreateProductDto } from "./dto/createProduct.dto";
 import { ProductRepository } from "./product.repository";
+import { SizeRepository } from "../size/size.repository";
+import { ProductSizeRepository } from "../productSize/productSize.repository";
 
 export const ProductService = {
   async getAllProducts() {
@@ -16,7 +18,6 @@ export const ProductService = {
   },
 
   async createProduct(productData: CreateProductDto) {
-    console.log(productData);
     const category = await CategoryRepository.upsert(productData.category);
     const user = await UserRepository.findById(productData.registredById);
     if (!user) {
@@ -45,19 +46,16 @@ export const ProductService = {
       }
       for (const { label, stock } of sizes) {
         // Garante que o tamanho exista
-        const size = await prisma.size.upsert({
-          where: { label },
-          update: {},
-          create: { label },
-        });
+        const size = await SizeRepository.upsert(label);
+        if (!size) {
+          throw new BadRequestError(`Size ${label} could not be created`);
+        }
 
         // Cria a associação ProductSize com o estoque
-        await prisma.productSize.create({
-          data: {
-            productId: newProduct.id,
-            sizeId: size.id,
-            stock,
-          },
+        await ProductSizeRepository.create({
+          productId: newProduct.id,
+          sizeId: size.id,
+          stock,
         });
       }
       const productWithSizes = await prisma.product.findUnique({
@@ -76,5 +74,16 @@ export const ProductService = {
     } catch (error) {
       throw new Error("Error creating product");
     }
+  },
+
+  async deleteProduct(id: string) {
+    const product = await ProductRepository.findById(id);
+
+    if (!product) {
+      throw new BadRequestError("Product not found");
+    }
+
+    await ProductRepository.delete(id);
+    return { message: "Product deleted successfully" };
   },
 };
