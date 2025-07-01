@@ -4,10 +4,11 @@ import { CreateUserSchema } from "./schemas/createUser.schema";
 import { LoginSchema } from "./schemas/login.schema";
 import { authenticate } from "../../middlewares/authenticate";
 import { UserController } from "./user.controller";
+import { upload } from "../../middlewares/uploadMiddleware";
 
 const router = Router();
 
-router.post("/", validate(CreateUserSchema), UserController.createUser);
+router.post("/", upload.single('avatar'), validate(CreateUserSchema),  UserController.createUser);
 router.post("/login", validate(LoginSchema), UserController.login);
 
 router.get("/me", authenticate, UserController.getCurrentUser);

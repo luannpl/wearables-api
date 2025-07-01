@@ -4,9 +4,10 @@ import { BadRequestError, UnauthorizedError } from "../../errors/HttpErrors";
 import { generateToken } from "../../utils/generateToken";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { LoginDto } from "./dto/login.dto";
+import { supabase } from "../../lib/supabase";
 
 export const UserService = {
-  async createUser(userData: CreateUserDto) {
+  async createUser(userData: CreateUserDto, file?: Express.Multer.File) {
     const existingUser = await UserRepository.findByEmail(userData.email);
     if (existingUser) {
       throw new BadRequestError("Email already registered");
@@ -18,6 +19,19 @@ export const UserService = {
       throw new BadRequestError("Username already registered");
     }
     userData.password = await hashPassword(userData.password);
+    
+    if (file) {
+      const filePath = `avatars/${userData.username}-${file.originalname}`;
+      const { data, error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: true,
+      });
+      if (uploadError) {
+        throw new BadRequestError("Error uploading avatar");
+      }
+      userData.avatarUrl = data.path;
+    }
+
     const user = await UserRepository.create(userData);
     if (!user) {
       throw new BadRequestError("Error creating user");

@@ -5,7 +5,7 @@ import { HttpError } from "../../errors/HttpErrors";
 export const UserController = {
   async createUser(req: Request, res: Response): Promise<void> {
     try {
-      const user = await UserService.createUser(req.body);
+      const user = await UserService.createUser(req.body, req.file as Express.Multer.File | undefined);
       res.status(201).json(user);
     } catch (error) {
       if (error instanceof HttpError) {
