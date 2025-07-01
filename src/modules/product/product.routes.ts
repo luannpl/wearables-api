@@ -6,8 +6,12 @@ import { CreateProductSchema } from "./schemas/createProduct.schema";
 const router = Router();
 
 router.get("/", ProductController.getAllProducts);
+router.delete("/:id", ProductController.deleteProduct);
 router.use(authenticate);
-router.post("/", validate(CreateProductSchema), ProductController.createProduct);
-
+router.post(
+  "/",
+  validate(CreateProductSchema),
+  ProductController.createProduct
+);
 
 export default router;
