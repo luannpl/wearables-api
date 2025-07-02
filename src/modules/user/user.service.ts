@@ -4,7 +4,8 @@ import { BadRequestError, UnauthorizedError } from "../../errors/HttpErrors";
 import { generateToken } from "../../utils/generateToken";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { LoginDto } from "./dto/login.dto";
-import { supabase } from "../../lib/supabase";
+import pinata from "../../lib/pinata";
+import { Readable } from 'stream';
 
 export const UserService = {
   async createUser(userData: CreateUserDto, file?: Express.Multer.File) {
@@ -21,15 +22,18 @@ export const UserService = {
     userData.password = await hashPassword(userData.password);
     
     if (file) {
-      const filePath = `avatars/${userData.username}-${file.originalname}`;
-      const { data, error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file.buffer, {
-        contentType: file.mimetype,
-        upsert: true,
-      });
-      if (uploadError) {
-        throw new BadRequestError("Error uploading avatar");
+      const stream = Readable.from(file.buffer);
+      const metadata = {
+        name: `avatar-${userData.username}-${Date.now()}-${file.originalname}`,
+      };
+  
+      const result = await pinata.pinFileToIPFS(stream, { pinataMetadata: metadata });
+  
+      if (!result || !result.IpfsHash) {
+        throw new BadRequestError("Error uploading avatar to IPFS");
       }
-      userData.avatarUrl = data.path;
+  
+      userData.avatarUrl = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
     }
 
     const user = await UserRepository.create(userData);

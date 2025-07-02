@@ -13,6 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@pinata/sdk": "^2.1.0",
     "@prisma/client": "^6.10.1",
     "@supabase/supabase-js": "^2.50.2",
     "bcrypt": "^6.0.0",

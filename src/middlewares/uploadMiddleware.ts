@@ -7,9 +7,9 @@ const storage = multer.memoryStorage();
 export const upload = multer({
   storage,
   limits: {
-    fileSize: 1 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024,
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_, file, cb) => {
     const filetypes = /jpeg|jpg|png|webp/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);

@@ -12,6 +12,7 @@ API RESTful desenvolvida com Node.js, Express, TypeScript e Prisma, utilizando P
 - Prisma ORM
 - Postgres (via Docker)
 - Docker Compose
+- Pinata Cloud (storage)
 
 ---
 
