@@ -34,8 +34,8 @@ model Product {
   category      Category      @relation(fields: [categoryId], references: [id])
   categoryId    String
   sizes         ProductSize[]
-  registredBy   User          @relation("UserRegistredProducts", fields: [registredById], references: [id])
-  registredById String
+  registredBy   User?         @relation("UserRegistredProducts", fields: [registredById], references: [id], onDelete: SetNull)
+  registredById String?
   updatedBy     User?         @relation("UserUpdatedProducts", fields: [updatedById], references: [id])
   updatedById   String?
   createdAt     DateTime      @default(now())
