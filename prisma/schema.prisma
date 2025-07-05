@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
 }
 
 enum Role {
@@ -29,6 +30,8 @@ model User {
 model Product {
   id            String        @id @default(uuid())
   name          String
+  description   String?
+  productImage  String?
   price         Float
   discount      Float         @default(0)
   category      Category      @relation(fields: [categoryId], references: [id])

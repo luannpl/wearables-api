@@ -7,7 +7,28 @@ export const ProductRepository = {
     try {
       const products = await prisma.product.findMany({
         include: {
-          category: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          sizes: {
+            select: {
+              stock: true,
+              size: {
+                select: {
+                  id: true,
+                  label: true,
+                },
+              },
+            },
+          },
+          registredBy: {
+            select: {
+              name: true,
+              avatarUrl: true,
+            },
+          },
         },
       });
       return products;
@@ -21,7 +42,28 @@ export const ProductRepository = {
       const product = await prisma.product.findUnique({
         where: { id },
         include: {
-          category: true,
+          category: {
+            select: {
+              name: true,
+            },
+          },
+          sizes: {
+            select: {
+              stock: true,
+              size: {
+                select: {
+                  id: true,
+                  label: true,
+                },
+              },
+            },
+          },
+          registredBy: {
+            select: {
+              name: true,
+              avatarUrl: true,
+            },
+          },
         },
       });
 

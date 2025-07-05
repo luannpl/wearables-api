@@ -5,14 +5,17 @@ import { HttpError } from "../../errors/HttpErrors";
 export const UserController = {
   async createUser(req: Request, res: Response): Promise<void> {
     try {
-      const user = await UserService.createUser(req.body, req.file as Express.Multer.File | undefined);
+      const user = await UserService.createUser(
+        req.body,
+        req.file as Express.Multer.File | undefined
+      );
       res.status(201).json(user);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof HttpError) {
         res.status(error.status).json({ error: error.message });
         return;
       }
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: error.message || "Internal Server Error" });
     }
   },
 
