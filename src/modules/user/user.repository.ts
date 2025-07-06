@@ -1,6 +1,6 @@
 import { prisma } from "../../prisma/client";
 import { CreateUserDto } from "./dto/createUser.dto";
-
+import { UpdateUserDto } from "./dto/updateUser.dto";
 
 export const UserRepository = {
   async findByEmail(email: string) {
@@ -53,6 +53,18 @@ export const UserRepository = {
       return users;
     } catch (error: any) {
       throw new Error(`Error fetching users: ${error.message}`);
+    }
+  },
+
+  async update(id: string, userData: UpdateUserDto) {
+    try {
+      const user = await prisma.user.update({
+        where: { id },
+        data: userData,
+      });
+      return user;
+    } catch (error: any) {
+      throw new Error(`Error updating user: ${error.message}`);
     }
   },
 

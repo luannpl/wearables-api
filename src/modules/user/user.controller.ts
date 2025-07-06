@@ -62,6 +62,23 @@ export const UserController = {
     }
   },
 
+  async updateUser(req: Request, res: Response): Promise<void> {
+    try {
+      const updatedUser = await UserService.updateUser(
+        req.params.id,
+        req.body,
+        req.file as Express.Multer.File | undefined
+      );
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.status).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
   async deleteUser(req: Request, res: Response): Promise<void> {
     try {
       await UserService.deleteUser(req.params.id);

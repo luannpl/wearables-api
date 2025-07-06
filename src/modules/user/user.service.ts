@@ -5,7 +5,7 @@ import { generateToken } from "../../utils/generateToken";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { LoginDto } from "./dto/login.dto";
 import pinata from "../../lib/pinata";
-import { Readable } from 'stream';
+import { Readable } from "stream";
 
 export const UserService = {
   async createUser(userData: CreateUserDto, file?: Express.Multer.File) {
@@ -20,19 +20,21 @@ export const UserService = {
       throw new BadRequestError("Username already registered");
     }
     userData.password = await hashPassword(userData.password);
-    
+
     if (file) {
       const stream = Readable.from(file.buffer);
       const metadata = {
         name: `avatar-${userData.username}-${Date.now()}-${file.originalname}`,
       };
-  
-      const result = await pinata.pinFileToIPFS(stream, { pinataMetadata: metadata });
-  
+
+      const result = await pinata.pinFileToIPFS(stream, {
+        pinataMetadata: metadata,
+      });
+
       if (!result || !result.IpfsHash) {
         throw new BadRequestError("Error uploading avatar to IPFS");
       }
-  
+
       userData.avatarUrl = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
     }
 
@@ -88,6 +90,56 @@ export const UserService = {
     } catch (error: any) {
       throw new Error(`Error fetching users: ${error.message}`);
     }
+  },
+
+  async updateUser(
+    id: string,
+    userData: CreateUserDto,
+    file?: Express.Multer.File
+  ) {
+    const user = await UserRepository.findById(id);
+    if (!user) {
+      throw new BadRequestError("User not found");
+    }
+    if (userData.email) {
+      const existingEmail = await UserRepository.findByEmail(userData.email);
+      if (existingEmail && existingEmail.id !== id) {
+        throw new BadRequestError("Email already registered");
+      }
+    }
+    if (userData.password) {
+      userData.password = await hashPassword(userData.password);
+    }
+    if (userData.username) {
+      const existingUsername = await UserRepository.findByUsername(
+        userData.username
+      );
+      if (existingUsername && existingUsername.id !== id) {
+        throw new BadRequestError("Username already registered");
+      }
+    }
+    if (file) {
+      const stream = Readable.from(file.buffer);
+      const metadata = {
+        name: `avatar-${userData.username}-${Date.now()}-${file.originalname}`,
+      };
+
+      const result = await pinata.pinFileToIPFS(stream, {
+        pinataMetadata: metadata,
+      });
+
+      if (!result || !result.IpfsHash) {
+        throw new BadRequestError("Error uploading avatar to IPFS");
+      }
+
+      userData.avatarUrl = `https://gateway.pinata.cloud/ipfs/${result.IpfsHash}`;
+    }
+    const updatedUser = await UserRepository.update(id, userData);
+    if (!updatedUser) {
+      throw new BadRequestError("Error updating user");
+    }
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
   },
 
   async deleteUser(id: string) {
