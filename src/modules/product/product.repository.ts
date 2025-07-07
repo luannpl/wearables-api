@@ -84,6 +84,18 @@ export const ProductRepository = {
     }
   },
 
+  async update(id: string, data: Prisma.ProductUpdateInput) {
+    try {
+      const updatedProduct = await prisma.product.update({
+        where: { id },
+        data,
+      });
+      return updatedProduct;
+    } catch (error) {
+      throw new Error("Error updating product");
+    }
+  },
+
   async delete(id: string) {
     try {
       const deletedProduct = await prisma.product.delete({

@@ -4,6 +4,7 @@ import { authenticate } from "../../middlewares/authenticate";
 import { ProductController } from "./product.controller";
 import { CreateProductSchema } from "./schemas/createProduct.schema";
 import { upload } from "../../middlewares/uploadMiddleware";
+import { UpdateProductSchema } from "./schemas/updateProduct.schema";
 const router = Router();
 
 router.get("/", ProductController.getAllProducts);
@@ -16,5 +17,12 @@ router.post(
   validate(CreateProductSchema),
   ProductController.createProduct
 );
+router.put(
+  "/:id",
+  upload.single("productImage"),
+  validate(UpdateProductSchema),
+  ProductController.updateProduct
+);
 
 export default router;
+
