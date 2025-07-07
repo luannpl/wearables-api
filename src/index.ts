@@ -1,13 +1,16 @@
 import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
 import UserRoutes from "./modules/user/user.routes";
 import ProductRoutes from "./modules/product/product.routes";
-import dotenv from "dotenv";
+import { corsOptions } from "./config/cors";
 import { conditionalBodyParser } from "./middlewares/conditionalBodyParser";
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.use(cors(corsOptions));
 app.use(conditionalBodyParser);
 
 app.get("/", (_, res) => {
