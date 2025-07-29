@@ -1,6 +1,6 @@
 import { UserRepository } from "./user.repository";
 import { comparePassword, hashPassword } from "../../utils/hash";
-import { BadRequestError, UnauthorizedError } from "../../errors/HttpErrors";
+import { BadRequestError, NotFoundError, UnauthorizedError } from "../../errors/HttpErrors";
 import { generateToken } from "../../utils/generateToken";
 import { CreateUserDto } from "./dto/createUser.dto";
 import { LoginDto } from "./dto/login.dto";
@@ -90,6 +90,15 @@ export const UserService = {
     } catch (error: any) {
       throw new Error(`Error fetching users: ${error.message}`);
     }
+  },
+
+  async getUserById(id: string) {
+    const user = await UserRepository.findById(id);
+    if (!user) {
+      throw new NotFoundError("User not found");
+    }
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   },
 
   async updateUser(

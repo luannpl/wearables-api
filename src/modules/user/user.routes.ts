@@ -20,6 +20,7 @@ router.post("/login", validate(LoginSchema), UserController.login);
 router.use(authenticate);
 router.get("/me", UserController.getCurrentUser);
 router.get("/", UserController.getAllUsers);
+router.get("/:id", UserController.getUserById);
 router.put(
   "/:id",
   upload.single("avatar"),

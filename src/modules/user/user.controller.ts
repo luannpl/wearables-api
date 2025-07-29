@@ -62,6 +62,19 @@ export const UserController = {
     }
   },
 
+  async getUserById(req: Request, res: Response): Promise<void> {
+    try{
+      const user = await UserService.getUserById(req.params.id);
+      res.status(200).json(user);
+    } catch (error) {
+      if (error instanceof HttpError) {
+        res.status(error.status).json({ error: error.message });
+        return;
+      }
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+
   async updateUser(req: Request, res: Response): Promise<void> {
     try {
       const updatedUser = await UserService.updateUser(
